@@ -6,10 +6,9 @@ brief   = "Layer 4 Discrete Homology & Toroidal Topology Subsystem."
 depends = base, linear, Idris2-Multiset-Core, Idris2-Multiset-Transform, Idris2-Multiset-Ternary, Idris2-Geometry
 sourcedir = "src"
 
-modules = Geometry.LatticeTopology,
+modules = Topology,
           Math.Topology.Boundaries,
           Math.Topology.Narayana,
           Math.Topology.Peaks,
           Math.Topology.PersistenceStream
-
 

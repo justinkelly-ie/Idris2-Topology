@@ -47,35 +47,3 @@ public export
 0 verifyMultisetClosedLoopNilpotency4 : multisetBoundaryChain2To0 [MkPixel 1 2, MkPixel 2 3, MkPixel 3 4, MkPixel 4 1] = ZeroM
 verifyMultisetClosedLoopNilpotency4 = Refl
 
---------------------------------------------------------------------------------
--- LEGACY VEXEL / MAXEL WRAPPERS (Preserving Backward Compatibility)
---------------------------------------------------------------------------------
-
-||| Boundary operator ∂₁ : Maxel -> Vexel mapping a 1-chain (edge maxel) to its 0-chain (vertex vexel boundary).
-public export
-boundary1To0 : Maxel -> Vexel
-boundary1To0 (MkMaxel edges) =
-  let vertexTerms = concatMap (\(MkPixel u v, w) =>
-                        [(MkUnixel v, w), (MkUnixel u, -w)]) edges
-  in canonicalizeVexel (MkVexel vertexTerms)
-
-||| Boundary operator ∂₂ : List Pixel -> Maxel mapping a 2-cell (closed edge loop) to its 1-chain (edge maxel boundary).
-public export
-boundary2To1 : List Pixel -> Maxel
-boundary2To1 loopEdges =
-  let terms = map (\p => (p, intToBoxInt 1)) loopEdges
-  in canonicalizeMaxel (MkMaxel terms)
-
-||| Total Chain Boundary Operator ∂² mapping a 2-cell closed loop down to 0-cells.
-public export
-boundaryChain2To0 : List Pixel -> Vexel
-boundaryChain2To0 loopEdges = boundary1To0 (boundary2To1 loopEdges)
-
-||| Legacy Vexel Nilpotency proofs.
-public export
-0 verifyClosedLoopNilpotency3 : boundaryChain2To0 [MkPixel 1 2, MkPixel 2 3, MkPixel 3 1] = MkVexel []
-verifyClosedLoopNilpotency3 = Refl
-
-public export
-0 verifyClosedLoopNilpotency4 : boundaryChain2To0 [MkPixel 1 2, MkPixel 2 3, MkPixel 3 4, MkPixel 4 1] = MkVexel []
-verifyClosedLoopNilpotency4 = Refl
