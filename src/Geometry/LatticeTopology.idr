@@ -130,8 +130,8 @@ cellLaplacian : Fin 27 -> Vect 27 BoxInt -> BoxInt
 cellLaplacian idx grid =
   let selfVal   = lookupCell idx grid
       neighbors = getFaceNeighbors idx
-      sumNeighbors = foldl (\acc, nIdx => acc + lookupCell nIdx grid) (intToBoxInt 0) neighbors
-  in sumNeighbors - (intToBoxInt 6 * selfVal)
+      sumNeighbors = foldl (\acc, nIdx => addBox acc (lookupCell nIdx grid)) (intToBoxInt 0) neighbors
+  in subBox sumNeighbors (addBox selfVal (addBox selfVal (addBox selfVal (addBox selfVal (addBox selfVal selfVal)))))
 
 ||| Generates the full Discrete Laplacian field ΔV for all 27 cells.
 public export
@@ -142,7 +142,7 @@ discreteLaplacian27 grid =
 ||| Computes the total sum of a 27-cell field.
 public export
 sumField27 : Vect 27 BoxInt -> BoxInt
-sumField27 grid = foldl (+) (intToBoxInt 0) grid
+sumField27 grid = foldl addBox (intToBoxInt 0) grid
 
 ||| Propagates spatial field flux by one discrete time step under diffusion parameter kappa:
 ||| V_{t+1}(r) = V_t(r) + kappa * ΔV(r)
@@ -151,7 +151,7 @@ public export
 stepFluxPropagation : BoxInt -> Vect 27 BoxInt -> Vect 27 BoxInt
 stepFluxPropagation kappa grid =
   let lap = discreteLaplacian27 grid
-  in zipWith (\v, l => v + (kappa * l)) grid lap
+  in zipWith (\v, l => addBox v (intToBoxInt (unwrapBox kappa * unwrapBox l))) grid lap
 
 ------------------------------------------------------------------------
 -- 4. PURE BOXEL MULTISET LATTICE & FLUX OPERATORS
@@ -184,6 +184,9 @@ discreteLaplacianBoxel b =
   let field = boxelToField27 b
       lap   = discreteLaplacian27 field
   in field27ToBoxel lap
+
+
+
 
 ||| Audits that discrete Laplacian flux on the compact 3-torus vanishes identically without leakage.
 public export
