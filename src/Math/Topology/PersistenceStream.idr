@@ -1,6 +1,7 @@
 module Math.Topology.PersistenceStream
 
 import public Core.BoxInt
+import public Core.VexelMaxel
 import public Math.OnSeq.FusedStream
 import public Math.Topology.Boundaries
 import Data.Fuel
@@ -65,3 +66,23 @@ auditPersistenceStreamProof =
   let items = [(Dim0, intToBoxInt 1), (Dim1, intToBoxInt 2), (Dim2, intToBoxInt 1)]
       betti = fusedComputeBettiRank (limit 100) items
   in unwrapBox betti == 4
+
+--------------------------------------------------------------------------------
+-- 3. NILPOTENT PERSISTENCE STREAM TRANSPORT
+--------------------------------------------------------------------------------
+
+||| A Persistent Homology Stream transporting an erased boundary nilpotency witness (∂² = 0) across filtration steps.
+public export
+record NilpotentPersistenceStream (loopEdges : List Pixel) where
+  constructor MkNilpotentPersistenceStream
+  streamData : FusedStream BoundaryToken
+  0 nilpotencyPrf : NilpotentBoundaryWitness loopEdges
+
+||| Constructs a NilpotentPersistenceStream transporting boundary nilpotency (∂² = 0) through deforested streams.
+public export
+makeNilpotentPersistenceStream : (loopEdges : List Pixel) ->
+                                 (0 prf : NilpotentBoundaryWitness loopEdges) ->
+                                 List (SimplexDimension, BoxInt) ->
+                                 NilpotentPersistenceStream loopEdges
+makeNilpotentPersistenceStream loopEdges prf items =
+  MkNilpotentPersistenceStream (unfoldPersistenceStream items) prf

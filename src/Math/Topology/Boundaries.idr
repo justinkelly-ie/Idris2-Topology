@@ -1,9 +1,8 @@
 module Math.Topology.Boundaries
 
-import Core.BoxInt
-import Core.Multiset
-import Core.VexelMaxel
-import Math.Multiset
+import public Core.BoxInt
+import public Math.Multiset
+import public Core.VexelMaxel
 import Data.List
 import Data.Vect
 
@@ -46,4 +45,36 @@ verifyMultisetClosedLoopNilpotency3 = Refl
 public export
 0 verifyMultisetClosedLoopNilpotency4 : multisetBoundaryChain2To0 [MkPixel 1 2, MkPixel 2 3, MkPixel 3 4, MkPixel 4 1] = ZeroM
 verifyMultisetClosedLoopNilpotency4 = Refl
+
+--------------------------------------------------------------------------------
+-- COMPILE-TIME HOMOLOGICAL BOUNDARY NILPOTENCY WITNESSES (∂² = 0)
+--------------------------------------------------------------------------------
+
+||| Zero-cost compile-time erased proof witness of Homological Boundary Nilpotency: ∂₁ ∘ ∂₂ (loop) = ZeroM (∂² = 0).
+public export
+0 NilpotentBoundaryWitness : List Pixel -> Type
+NilpotentBoundaryWitness loopEdges = multisetBoundaryChain2To0 loopEdges = ZeroM
+
+||| A Homological Cell Complex structure equipped with an erased compile-time nilpotency witness (∂² = 0).
+public export
+record HomologicalCellComplex (loopEdges : List Pixel) where
+  constructor MkHomologicalCellComplex
+  0 nilpotencyPrf : NilpotentBoundaryWitness loopEdges
+
+||| Constructs a validated HomologicalCellComplex equipped with an erased 0 nilpotencyPrf witness.
+public export
+makeCellComplex : (loopEdges : List Pixel) ->
+                  (0 prf : NilpotentBoundaryWitness loopEdges) ->
+                  HomologicalCellComplex loopEdges
+makeCellComplex loopEdges prf = MkHomologicalCellComplex prf
+
+||| Static erased compile-time witness of Homological Boundary Nilpotency (∂² = 0) for a 3-cycle triangle loop.
+public export
+0 prf3CycleNilpotency : NilpotentBoundaryWitness [MkPixel 1 2, MkPixel 2 3, MkPixel 3 1]
+prf3CycleNilpotency = Refl
+
+||| Static erased compile-time witness of Homological Boundary Nilpotency (∂² = 0) for a 4-cycle square loop.
+public export
+0 prf4CycleNilpotency : NilpotentBoundaryWitness [MkPixel 1 2, MkPixel 2 3, MkPixel 3 4, MkPixel 4 1]
+prf4CycleNilpotency = Refl
 
