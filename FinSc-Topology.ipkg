@@ -1,9 +1,9 @@
-package Idris2-Topology
+package FinSc-Topology
 version = 0.3.1
 authors = "Justin Kelly"
 brief   = "Layer 4 Discrete Homology & Toroidal Topology Subsystem."
 
-depends = base, linear, Idris2-Multiset-Core, Idris2-Multiset-Transform, Idris2-Multiset-Ternary, Idris2-Geometry
+depends = base, linear, FinSc-Multiset-Core, FinSc-Multiset-Transform, FinSc-Multiset-Ternary, FinSc-Geometry
 sourcedir = "src"
 
 modules = Topology,
